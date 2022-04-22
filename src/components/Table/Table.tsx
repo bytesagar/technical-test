@@ -38,13 +38,17 @@ const Table = ({ data }: ITableProps) => {
         setUsers(
           data.filter(
             (user: IUser) =>
-              user.username.toLowerCase().includes(query?.toLowerCase()) ||
-              user.id.includes(query) ||
-              user.email.toLowerCase().includes(query.toLowerCase()) ||
-              user.name.toLowerCase().includes(query.toLowerCase()) ||
-              user.phone.includes(query) ||
-              user.address.street.toLowerCase().includes(query.toLowerCase()) ||
-              user.website.toLowerCase().includes(query.toLowerCase())
+              Object.entries(user).filter(([key, value]) => {
+                if (key === 'isChecked') return false;
+
+                const valToCheck =
+                  key === 'address'
+                    ? value.street.toLowerCase()
+                    : ['id', 'phone'].includes(key)
+                    ? value
+                    : value.toLowerCase();
+                return valToCheck.includes(query.toLowerCase());
+              }).length !== 0
           )
         ),
       400
