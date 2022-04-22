@@ -11,7 +11,6 @@ interface ITableProps {
 const Table = ({ data }: ITableProps) => {
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [checkedInput, setCheckedInput] = useState<string[]>([]);
-  const [query, setQuery] = useState("");
   const [users, setUsers] = useState<IUser[]>(data);
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {

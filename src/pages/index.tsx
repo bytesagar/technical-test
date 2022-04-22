@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import { GetAllUsersQuery, useGetAllUsersQuery } from "../generated/graphql";
 import gqlRequestClient from "../clients/gqlRequestClient";
 import Table from "@/components/Table";
+import Loader from "@/components/Loader";
 
 const Home: NextPage = () => {
   const { isLoading, error, data } = useGetAllUsersQuery<
@@ -11,7 +12,7 @@ const Home: NextPage = () => {
   >(gqlRequestClient, {});
 
   if (isLoading) {
-    return <h1>Loading...</h1>;
+    return <Loader />;
   }
 
   if (error) {
