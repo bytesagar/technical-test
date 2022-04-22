@@ -7,24 +7,20 @@ type ITableProps = {
   data: IUser[];
 };
 
-interface MyEvent<T extends EventTarget> extends Omit<Event, "target"> {
-  target: T;
-}
-
 const Table = ({ data }: ITableProps) => {
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
   const [checkedInput, setCheckedInput] = useState<string[]>([]);
   const [query, setQuery] = useState("");
   const [users, setUsers] = useState<IUser[]>(data);
 
-  const handleSelectAll = (e) => {
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsAllChecked(!isAllChecked);
     setCheckedInput(data?.map((item) => item?.id));
     if (isAllChecked) {
       setCheckedInput([]);
     }
   };
-  const handleClick = (e: MyEvent<HTMLInputElement>) => {
+  const handleClick = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, checked } = e.target;
     setCheckedInput([...checkedInput, id]);
     if (!checked) {
@@ -55,7 +51,9 @@ const Table = ({ data }: ITableProps) => {
     ),
     []
   );
-  const handleSearch = (e: MyEvent<HTMLInputElement>) => {
+  const handleSearch = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
     filterUsers(e.target.value);
   };
 
