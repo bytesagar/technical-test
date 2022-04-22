@@ -4,30 +4,36 @@ import Button from "@/components/Button";
 import styles from "./Table.module.css";
 import debounce from "lodash.debounce";
 
+import Checkbox from "@/components/Checkbox";
+import Search from "@/components/Search";
+
 interface ITableProps {
   data: IUser[] | any;
 }
 
 const Table = ({ data }: ITableProps) => {
-  const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
-  const [checkedInput, setCheckedInput] = useState<string[]>([]);
-  const [users, setUsers] = useState<IUser[]>(data);
+  const [users, setUsers] = useState<IUser[]>([]);
 
-  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsAllChecked(!isAllChecked);
-    setCheckedInput(data?.map((item: IUser) => item?.id));
-    if (isAllChecked) {
-      setCheckedInput([]);
-    }
-  };
+  useEffect(() => {
+    setUsers(
+      data?.sort((a: IUser, b: IUser) =>
+        a?.username.toLowerCase() > b?.username.toLowerCase() ? 1 : -1
+      )
+    );
+  }, [data]);
+
   const handleClick = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, checked } = e.target;
-    setCheckedInput([...checkedInput, id]);
-    if (!checked) {
-      setCheckedInput(checkedInput.filter((item) => item !== id));
-    }
-    if (checkedInput.length === 10) {
-      setIsAllChecked(true);
+    const { checked, name } = e.target;
+    if (name === "selectAll") {
+      const tempUser = users.map((user) => {
+        return { ...user, isChecked: checked };
+      });
+      setUsers(tempUser);
+    } else {
+      const tempUser = users?.map((user) =>
+        user.username === name ? { ...user, isChecked: checked } : user
+      );
+      setUsers(tempUser);
     }
   };
 
@@ -47,28 +53,20 @@ const Table = ({ data }: ITableProps) => {
               user.website.toLowerCase().includes(query.toLowerCase())
           )
         ),
-      500
+      1000
     ),
     []
   );
-  const handleSearch = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     filterUsers(e.target.value);
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className={styles.table}>
       <div className={styles.top}>
         <h2>Users</h2>
         <div className={styles.top_right}>
-          <div className={styles.input_wrapper}>
-            <input
-              type="text"
-              placeholder="Search here"
-              onChange={handleSearch}
-            />
-          </div>
+          <Search onChange={handleSearch} />
           <Button icon="+" onClick={() => console.log("clicked")}>
             Add User
           </Button>
@@ -77,10 +75,10 @@ const Table = ({ data }: ITableProps) => {
 
       <div className={styles.table_header}>
         <div className={styles.col}>
-          <input
-            type="checkbox"
-            onChange={handleSelectAll}
-            checked={isAllChecked}
+          <Checkbox
+            name="selectAll"
+            onChange={handleClick}
+            checked={!users?.some((user) => user?.isChecked !== true)}
           />
         </div>
 
@@ -95,12 +93,10 @@ const Table = ({ data }: ITableProps) => {
       {users?.map((user) => (
         <div className={styles.table_body} key={user?.id}>
           <div className={styles.col}>
-            <input
-              type="checkbox"
+            <Checkbox
               name={user?.username}
-              id={user.id}
               onChange={handleClick}
-              checked={checkedInput.includes(user.id)}
+              checked={user?.isChecked || false}
             />
           </div>
           <div className={styles.col}>{user?.id}</div>
