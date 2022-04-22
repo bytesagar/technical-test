@@ -53,7 +53,7 @@ const Table = ({ data }: ITableProps) => {
               user.website.toLowerCase().includes(query.toLowerCase())
           )
         ),
-      1000
+      400
     ),
     []
   );
