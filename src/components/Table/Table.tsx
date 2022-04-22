@@ -3,9 +3,10 @@ import { IUser } from "@/interfaces/IUser";
 import Button from "@/components/Button";
 import styles from "./Table.module.css";
 import debounce from "lodash.debounce";
-type ITableProps = {
-  data: IUser[];
-};
+
+interface ITableProps {
+  data: IUser[] | any;
+}
 
 const Table = ({ data }: ITableProps) => {
   const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
@@ -15,7 +16,7 @@ const Table = ({ data }: ITableProps) => {
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsAllChecked(!isAllChecked);
-    setCheckedInput(data?.map((item) => item?.id));
+    setCheckedInput(data?.map((item: IUser) => item?.id));
     if (isAllChecked) {
       setCheckedInput([]);
     }
