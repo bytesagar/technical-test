@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { IUser } from "@/interfaces/IUser";
-import Button from "@/components/Button";
-import styles from "./Table.module.css";
-import debounce from "lodash.debounce";
+import React, { useCallback, useEffect, useState } from 'react';
+import { IUser } from '@/interfaces/IUser';
+import Button from '@/components/Button';
+import styles from './Table.module.css';
+import debounce from 'lodash.debounce';
 
-import Checkbox from "@/components/Checkbox";
-import Search from "@/components/Search";
+import Checkbox from '@/components/Checkbox';
+import Search from '@/components/Search';
 
 interface ITableProps {
   data: IUser[] | any;
@@ -15,24 +15,18 @@ const Table = ({ data }: ITableProps) => {
   const [users, setUsers] = useState<IUser[]>([]);
 
   useEffect(() => {
-    setUsers(
-      data?.sort((a: IUser, b: IUser) =>
-        a?.username.toLowerCase() > b?.username.toLowerCase() ? 1 : -1
-      )
-    );
+    setUsers(data?.sort((a: IUser, b: IUser) => (a?.username.toLowerCase() > b?.username.toLowerCase() ? 1 : -1)));
   }, [data]);
 
   const handleClick = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { checked, name } = e.target;
-    if (name === "selectAll") {
+    if (name === 'selectAll') {
       const tempUser = users.map((user) => {
         return { ...user, isChecked: checked };
       });
       setUsers(tempUser);
     } else {
-      const tempUser = users?.map((user) =>
-        user.username === name ? { ...user, isChecked: checked } : user
-      );
+      const tempUser = users?.map((user) => (user.username === name ? { ...user, isChecked: checked } : user));
       setUsers(tempUser);
     }
   };
@@ -67,7 +61,7 @@ const Table = ({ data }: ITableProps) => {
         <h2>Users</h2>
         <div className={styles.top_right}>
           <Search onChange={handleSearch} />
-          <Button icon="+" onClick={() => console.log("clicked")}>
+          <Button icon="+" onClick={() => console.log('clicked')}>
             Add User
           </Button>
         </div>
@@ -78,7 +72,7 @@ const Table = ({ data }: ITableProps) => {
           <Checkbox
             name="selectAll"
             onChange={handleClick}
-            checked={!users?.some((user) => user?.isChecked !== true)}
+            checked={users?.length > 0 && !users?.some((user) => user?.isChecked !== true)}
           />
         </div>
 
@@ -93,11 +87,7 @@ const Table = ({ data }: ITableProps) => {
       {users?.map((user) => (
         <div className={styles.table_body} key={user?.id}>
           <div className={styles.col}>
-            <Checkbox
-              name={user?.username}
-              onChange={handleClick}
-              checked={user?.isChecked || false}
-            />
+            <Checkbox name={user?.username} onChange={handleClick} checked={user?.isChecked || false} />
           </div>
           <div className={styles.col}>{user?.id}</div>
           <div className={styles.col}>{user?.name}</div>
